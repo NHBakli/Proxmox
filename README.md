@@ -442,6 +442,6 @@ provider "registry.terraform.io/bpg/proxmox" {
 - [x] Module Terraform `linux-vm`
 - [x] Création du template Ubuntu via `null_resource` + SSH
 - [x] Connexion API Proxmox validée (`terraform plan` OK)
-- [ ] Déploiement de la première VM lab (`terraform apply`)
+- [x] Déploiement de la première VM lab (`terraform apply`)
 - [ ] Intégration Vault pour la gestion des secrets
 - [ ] Templates Packer avancés
