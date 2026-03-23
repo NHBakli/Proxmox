@@ -1,5 +1,33 @@
-.idea
+# IDE
+.idea/
 
-packer/variables.pkrvars.hcl
+# ======================
+# TERRAFORM
+# ======================
 
-environments/lab/variables.tf
+# Providers téléchargés (binaires lourds, spécifiques à la machine)
+**/.terraform/
+
+# État de l'infrastructure (contient des données sensibles : IPs, IDs...)
+*.tfstate
+*.tfstate.backup
+
+# Verrou temporaire actif pendant un terraform apply
+*.tfstate.lock.info
+
+# Fichiers de variables avec valeurs réelles (secrets éventuels)
+*.tfvars
+*.tfvars.json
+
+# Fichiers de surcharge locaux (usage avancé, non partagés)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# ======================
+# PACKER
+# ======================
+
+# Variables Packer (peuvent contenir des secrets)
+*.pkrvars.hcl
