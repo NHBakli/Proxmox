@@ -21,6 +21,11 @@ resource "null_resource" "ubuntu_template" {
       # Télécharge l'image cloud Ubuntu (600 Mo, directement sur Proxmox)
       "wget -q https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img -O /tmp/ubuntu-22.img",
 
+      # Installe qemu-guest-agent dans l'image avant de créer le template
+      # => les VMs clonées démarrent avec l'agent déjà prêt (~1min au lieu de 15min)
+      "apt-get install -y libguestfs-tools > /dev/null 2>&1",
+      "virt-customize -a /tmp/ubuntu-22.img --install qemu-guest-agent --run-command 'systemctl enable qemu-guest-agent'",
+
       # Crée une VM vide avec l'ID 9000
       "qm create 9000 --name ubuntu-22-cloud --memory 512 --cores 1 --net0 virtio,bridge=vmbr0 --ostype l26",
 

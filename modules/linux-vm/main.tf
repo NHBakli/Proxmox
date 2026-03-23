@@ -1,7 +1,8 @@
 resource "proxmox_virtual_environment_vm" "this" {
-  node_name = var.target_node
-  vm_id     = var.vm_id
-  name      = var.vm_name
+  node_name        = var.target_node
+  vm_id            = var.vm_id
+  name             = var.vm_name
+  stop_on_destroy  = true
 
   clone {
     vm_id = 9000
@@ -10,6 +11,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   agent {
     enabled = true
+    timeout = "2m"
   }
 
   cpu {
