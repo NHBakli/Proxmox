@@ -1,3 +1,5 @@
 .idea
 
 packer/variables.pkrvars.hcl
+
+environments/lab/variables.tf
