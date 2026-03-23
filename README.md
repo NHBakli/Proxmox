@@ -392,6 +392,38 @@ Quand tu travailles avec Terraform, certains fichiers sont générés automatiqu
 
 > **Règle d'or** : si un fichier contient une valeur concrète (un mot de passe, une IP sensible, un token), il ne doit pas être sur Git. Si un fichier décrit une *structure* (des types, des noms de variables, de la logique), il peut l'être.
 
+### Focus sur `.terraform.lock.hcl`
+
+Ce fichier mérite une attention particulière car son rôle est souvent mal compris.
+
+Quand tu déclares un provider dans `providers.tf`, tu indiques une contrainte de version :
+
+```hcl
+proxmox = {
+  source  = "bpg/proxmox"
+  version = "~> 0.66.0"   # signifie : 0.66.x, mais pas 0.67
+}
+```
+
+Cette contrainte est large — `0.66.0`, `0.66.3`, `0.66.9` sont toutes valides. Le `.terraform.lock.hcl` va plus loin : il **fige la version exacte** qui a été réellement téléchargée, ainsi que son empreinte cryptographique :
+
+```hcl
+provider "registry.terraform.io/bpg/proxmox" {
+  version     = "0.66.3"        ← version exacte utilisée
+  constraints = "~> 0.66.0"
+  hashes = [
+    "h1:xxx...",                 ← empreinte du binaire pour vérifier l'intégrité
+  ]
+}
+```
+
+**Sans ce fichier sur Git** :
+- Toi aujourd'hui → `bpg/proxmox 0.66.3`
+- Ton collègue demain → `bpg/proxmox 0.66.9` (nouvelle version sortie entre-temps)
+- Résultat : comportements différents, bugs difficiles à reproduire
+
+**Avec ce fichier sur Git** : tout le monde télécharge exactement la même version. C'est le même principe que `package-lock.json` en Node.js ou `Pipfile.lock` en Python.
+
 ---
 
 ## Sécurité
