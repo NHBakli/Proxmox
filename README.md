@@ -34,6 +34,65 @@ sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update && sudo apt install -y terraform
 ```
 
+### Installation de Terraform (Windows avec Chocolatey)
+
+**1. Installer Chocolatey** (si pas déjà installé)
+
+Ouvre PowerShell **en tant qu'administrateur** et exécute :
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+Ferme puis rouvre PowerShell (admin) pour que `choco` soit disponible.
+
+**2. Installer Terraform**
+
+```powershell
+choco install terraform -y
+```
+
+**3. Vérifier l'installation**
+
+```powershell
+terraform -version
+```
+
+Tu dois voir quelque chose comme `Terraform v1.x.x`.
+
+**4. Générer une clé SSH**
+
+```powershell
+ssh-keygen -t rsa -b 4096
+# Appuie sur Entrée pour accepter les valeurs par défaut
+# La clé sera dans C:\Users\<ton_user>\.ssh\id_rsa.pub
+```
+
+**5. Exporter les secrets**
+
+Sous PowerShell, les variables d'environnement se définissent ainsi :
+
+```powershell
+$env:TF_VAR_proxmox_password = "TON_MOT_DE_PASSE_PROXMOX"
+$env:TF_VAR_ssh_public_key = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
+```
+
+> Ces variables sont valables uniquement pour la session PowerShell en cours. Tu devras les redéfinir à chaque nouvelle session.
+
+**6. Lancer Terraform**
+
+Le `Makefile` n'est pas disponible nativement sous Windows. Utilise les commandes Terraform directement depuis le dossier `environments/lab/` :
+
+```powershell
+cd environments\lab
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+```
+
 ---
 
 ## Comprendre les concepts clés
